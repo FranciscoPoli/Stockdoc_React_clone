@@ -1,11 +1,10 @@
 {
+  "buildCommand": "cd client && npm install && NODE_ENV=production FORCE_COLOR=0 vite build --mode production && cd .. && mkdir -p dist && cp -r client/dist/* dist/",
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     }
-  ],
-  "buildCommand": "cd client && npm install && VITE_SKIP_TS_CHECK=true vite build && cd .. && npm install && mkdir -p dist && cp -r client/dist/* dist/",
-  "outputDirectory": "dist",
-  "framework": "vite"
+  ]
 }
