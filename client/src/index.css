@@ -1,9 +1,22 @@
+@import './styles/theme.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    background-color: hsl(var(--background));
+  }
+
   body {
-    @apply font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  * {
+    @apply border-border;
   }
 }

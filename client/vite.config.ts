@@ -15,6 +15,9 @@ export default defineConfig({
       }
     }
   },
+  define: {
+    "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src")
@@ -23,7 +26,14 @@ export default defineConfig({
   optimizeDeps: {
     include: ["wouter"]
   },
-  esbuild: {
-    logOverride: { 'this-is-undefined-in-esm': 'silent' }
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://stockdoc-react-clone.vercel.app',
+        changeOrigin: true,
+        secure: false,
+        ws: true
+      }
+    }
   }
 });
