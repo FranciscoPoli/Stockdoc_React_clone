@@ -27,7 +27,7 @@ echo "Starting build..."
 VITE_SKIP_TS_CHECK=true NODE_ENV=production npm run build
 echo "Build completed"
 
-# Debug: List contents
+# Debug: Show build output
 echo "Contents of client/dist directory:"
 ls -la dist/
 
@@ -48,8 +48,3 @@ if [ ! -f "dist/index.html" ]; then
 fi
 
 echo "Build and copy completed successfully"
-cd ..
-
-# Copy build output to dist directory
-mkdir -p dist
-cp -r client/dist/* dist/
