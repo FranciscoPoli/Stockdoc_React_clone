@@ -6,6 +6,12 @@ import admin from 'firebase-admin';
 
 // Check if Firebase is properly configured
 export const isFirebaseConfigured = () => {
+  console.log('Checking Firebase configuration...');
+  console.log('API_KEY:', !!process.env.FIREBASE_API_KEY);
+  console.log('PROJECT_ID:', !!process.env.FIREBASE_PROJECT_ID);
+  console.log('AUTH_DOMAIN:', !!process.env.FIREBASE_AUTH_DOMAIN);
+  console.log('DATABASE_URL:', !!process.env.FIREBASE_DATABASE_URL);
+  
   return process.env.FIREBASE_API_KEY && 
          process.env.FIREBASE_PROJECT_ID &&
          process.env.FIREBASE_AUTH_DOMAIN;
@@ -20,6 +26,7 @@ let auth: Auth | null = null;
 // Initialize Firebase client only if properly configured
 if (isFirebaseConfigured()) {
   try {
+    console.log('Initializing Firebase...');
     // Firebase client configuration
     const firebaseConfig = {
       apiKey: process.env.FIREBASE_API_KEY,
@@ -36,14 +43,17 @@ if (isFirebaseConfigured()) {
 
     // Initialize Firestore
     db = getFirestore(app);
+    console.log('Firestore initialized');
 
     // Initialize Realtime Database only if database URL is provided
     if (process.env.FIREBASE_DATABASE_URL) {
       rtdb = getDatabase(app);
+      console.log('Realtime Database initialized');
     }
 
     // Initialize Authentication
     auth = getAuth(app);
+    console.log('Authentication initialized');
     
     console.log('Firebase client initialized successfully');
   } catch (error) {
@@ -69,6 +79,7 @@ export function initializeAdminSDK() {
   }
   
   try {
+    console.log('Initializing Firebase Admin SDK...');
     // Check if we have proper configuration
     if (!process.env.FIREBASE_PROJECT_ID) {
       console.warn('Firebase Admin SDK initialization skipped: No project ID provided');
@@ -86,6 +97,7 @@ export function initializeAdminSDK() {
           databaseURL: process.env.FIREBASE_DATABASE_URL,
           projectId: process.env.FIREBASE_PROJECT_ID
         });
+        console.log('Firebase Admin SDK service account loaded');
       } catch (parseError) {
         console.error('Error parsing Firebase service account JSON:', parseError);
         return;
@@ -99,6 +111,7 @@ export function initializeAdminSDK() {
     // Initialize Firestore
     try {
       adminFirestoreInstance = admin.firestore(adminApp);
+      console.log('Admin Firestore initialized');
     } catch (firestoreError) {
       console.error('Error initializing Admin Firestore:', firestoreError);
     }
@@ -107,6 +120,7 @@ export function initializeAdminSDK() {
     if (process.env.FIREBASE_DATABASE_URL) {
       try {
         adminRtdbInstance = admin.database(adminApp);
+        console.log('Admin Realtime Database initialized');
       } catch (rtdbError) {
         console.error('Error initializing Admin Realtime Database:', rtdbError);
       }
