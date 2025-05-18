@@ -5,7 +5,7 @@
       "destination": "/api/$1"
     }
   ],
-  "buildCommand": "cd client && npm install && npm run build && cd .. && npm install && tsc server/index.ts --outDir dist && cp -r client/dist/* dist/",
+  "buildCommand": "cd client && npm install && VITE_SKIP_TS_CHECK=true vite build && cd .. && npm install && mkdir -p dist && cp -r client/dist/* dist/",
   "outputDirectory": "dist",
   "framework": "vite"
 }

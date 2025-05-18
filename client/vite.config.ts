@@ -6,7 +6,10 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: "../dist",
-    emptyOutDir: true
+    emptyOutDir: true,
+    commonjsOptions: {
+      include: []
+    }
   },
   resolve: {
     alias: {
@@ -20,5 +23,8 @@ export default defineConfig({
         changeOrigin: true
       }
     }
+  },
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
   }
 });

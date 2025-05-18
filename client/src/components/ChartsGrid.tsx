@@ -32,55 +32,66 @@ const ChartsGrid: FC<ChartsGridProps> = ({
   currentSymbol = "AAPL",
   stockInfo
 }) => {
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <div key={index} className="bg-card rounded-lg shadow-lg p-6 animate-pulse">
-            <div className="flex justify-between mb-4">
-              <div className="h-4 bg-muted rounded w-24"></div>
-              <div className="h-4 bg-muted rounded w-16"></div>
-            </div>
-            <div className="h-64 bg-muted rounded"></div>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  const mainStockColor = "#10b981"; // emerald-500
 
-  if (!financialData) {
-    return (
-      <div className="text-center py-10">
-        <p className="text-muted-foreground">No financial data available</p>
-      </div>
-    );
-  }
+  // Ensure data arrays exist or use empty arrays as fallback
+  const getDataArray = (data: any) => data?.[dataFrequency] || [];
 
-  // Find comparison data for each chart type
-  const findComparisonData = (metric: string) => {
-    return comparisonData
-      .filter(item => item.data && item.data[metric] && item.data[metric][dataFrequency])
-      .map(item => ({
-        name: item.symbol,
-        data: item.data[metric][dataFrequency],
-        color: item.color
-      }));
-  };
+  const revenueComparisons = comparisonData.map((stock, index) => ({
+    name: stock.symbol,
+    data: getDataArray(stock.financialData?.revenue),
+    color: stock.color
+  }));
 
-  const revenueComparisons = findComparisonData('revenue');
-  const netIncomeComparisons = findComparisonData('netIncome');
-  const cashComparisons = findComparisonData('cash');
-  const debtComparisons = findComparisonData('debt');
-  const sharesComparisons = findComparisonData('sharesOutstanding');
+  const netIncomeComparisons = comparisonData.map((stock, index) => ({
+    name: stock.symbol,
+    data: getDataArray(stock.financialData?.netIncome),
+    color: stock.color
+  }));
+
+  const cashComparisons = comparisonData.map((stock, index) => ({
+    name: stock.symbol,
+    data: getDataArray(stock.financialData?.cash),
+    color: stock.color
+  }));
+
+  const debtComparisons = comparisonData.map((stock, index) => ({
+    name: stock.symbol,
+    data: getDataArray(stock.financialData?.debt),
+    color: stock.color
+  }));
+
+  const sharesComparisons = comparisonData.map((stock, index) => ({
+    name: stock.symbol,
+    data: getDataArray(stock.financialData?.sharesOutstanding),
+    color: stock.color
+  }));
+
   // Commented out SBC comparisons as it's not available in the database
   // const sbcComparisons = findComparisonData('stockBasedCompensation');
-  const grossMarginComparisons = findComparisonData('grossMargin');
-  const netMarginComparisons = findComparisonData('netMargin');
-  const fcfComparisons = findComparisonData('freeCashFlow');
-  const capexComparisons = findComparisonData('capex');
+  const grossMarginComparisons = comparisonData.map((stock, index) => ({
+    name: stock.symbol,
+    data: getDataArray(stock.financialData?.grossMargin),
+    color: stock.color
+  }));
 
-  // Define a consistent color for the main stock
-  const mainStockColor = "hsl(217, 91%, 60%)"; // Primary blue
+  const netMarginComparisons = comparisonData.map((stock, index) => ({
+    name: stock.symbol,
+    data: getDataArray(stock.financialData?.netMargin),
+    color: stock.color
+  }));
+
+  const fcfComparisons = comparisonData.map((stock, index) => ({
+    name: stock.symbol,
+    data: getDataArray(stock.financialData?.freeCashFlow),
+    color: stock.color
+  }));
+
+  const capexComparisons = comparisonData.map((stock, index) => ({
+    name: stock.symbol,
+    data: getDataArray(stock.financialData?.capex),
+    color: stock.color
+  }));
 
   // Check if we're in comparison mode
   const isCompareMode = comparisonData.length > 0;
@@ -93,7 +104,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
         <StockChart
           title="Revenue"
           subtitle="USD"
-          data={financialData.revenue[dataFrequency]}
+          data={getDataArray(financialData?.revenue)}
           dataFrequency={dataFrequency}
           color={mainStockColor}
           index={0}
@@ -105,7 +116,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
         <StockChart
           title="Net Income"
           subtitle="USD"
-          data={financialData.netIncome[dataFrequency]}
+          data={getDataArray(financialData?.netIncome)}
           dataFrequency={dataFrequency}
           color={mainStockColor}
           index={1}
@@ -118,7 +129,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
         <StockChart
           title="Cash & Short Term Investments"
           subtitle="USD"
-          data={financialData.cash[dataFrequency]}
+          data={getDataArray(financialData?.cash)}
           dataFrequency={dataFrequency}
           color={mainStockColor}
           index={2}
@@ -129,7 +140,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
         <StockChart
           title="Long Term Debt"
           subtitle="USD"
-          data={financialData.debt[dataFrequency]}
+          data={getDataArray(financialData?.debt)}
           dataFrequency={dataFrequency}
           color={mainStockColor} 
           index={3}
@@ -143,7 +154,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
         <StockChart
           title="Gross Margin"
           subtitle="Percentage (%)"
-          data={financialData.grossMargin[dataFrequency]}
+          data={getDataArray(financialData?.grossMargin)}
           dataFrequency={dataFrequency}
           color={mainStockColor}
           index={5}
@@ -155,7 +166,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
         <StockChart
           title="Net Margin"
           subtitle="Percentage (%)"
-          data={financialData.netMargin[dataFrequency]}
+          data={getDataArray(financialData?.netMargin)}
           dataFrequency={dataFrequency}
           color={mainStockColor}
           index={6}
@@ -167,7 +178,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
         <StockChart
           title="Free Cash Flow"
           subtitle="USD"
-          data={financialData.freeCashFlow[dataFrequency]}
+          data={getDataArray(financialData?.freeCashFlow)}
           dataFrequency={dataFrequency}
           color={mainStockColor}
           index={7}
@@ -178,7 +189,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
         <StockChart
           title="Capex"  // Changed to match the isFinancialValue check in formatTooltipValue
           subtitle="USD"
-          data={financialData.capex[dataFrequency]}
+          data={getDataArray(financialData?.capex)}
           dataFrequency={dataFrequency}
           color={mainStockColor} //"hsl(345, 82%, 45%)" // Dark red
           index={8}
@@ -199,7 +210,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
         title="Revenue"
         subtitle="USD"
         growthTitle="Revenue"
-        data={financialData.revenue[dataFrequency]}
+        data={getDataArray(financialData?.revenue)}
         dataFrequency={dataFrequency}
         color="hsl(345, 82%, 45%)" // Dark red "hsl(217, 91%, 60%)" // Primary blue
         index={0}
@@ -211,7 +222,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
         title="Net Income"
         subtitle="USD"
         growthTitle="Net Income"
-        data={financialData.netIncome[dataFrequency]}
+        data={getDataArray(financialData?.netIncome)}
         dataFrequency={dataFrequency}
         color="hsl(152, 76%, 40%)" // Green
         index={1}
@@ -222,10 +233,10 @@ const ChartsGrid: FC<ChartsGridProps> = ({
       <StockChart
         title="Cash vs Debt"
         subtitle="USD"
-        data={financialData.cash[dataFrequency]}
+        data={getDataArray(financialData?.cash)}
         dataFrequency={dataFrequency}
         color="hsl(265, 89%, 60%)" // Purple "hsl(217, 91%, 60%)" // Primary blue
-        secondaryData={financialData.debt[dataFrequency]}
+        secondaryData={getDataArray(financialData?.debt)}
         secondaryColor="hsl(28, 96%, 50%)" // Orange "hsl(0, 84%, 60%)" // Red
         primaryName="Cash"
         secondaryName="Debt"
@@ -235,7 +246,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
       <StockChart
         title="Shares Outstanding"
         subtitle="Shares"
-        data={financialData.sharesOutstanding[dataFrequency]}
+        data={getDataArray(financialData?.sharesOutstanding)}
         dataFrequency={dataFrequency}
         color="hsl(265, 89%, 60%)" // Purple
         // Commented out SBC data since it's not available in the database
@@ -258,10 +269,10 @@ const ChartsGrid: FC<ChartsGridProps> = ({
       <StockChart
         title="Gross & Net Margins"
         subtitle="Percentage (%)"
-        data={financialData.grossMargin[dataFrequency]}
+        data={getDataArray(financialData?.grossMargin)}
         dataFrequency={dataFrequency}
         color="hsl(38, 92%, 50%)" // Yellow/Orange
-        secondaryData={financialData.netMargin[dataFrequency]}
+        secondaryData={getDataArray(financialData?.netMargin)}
         secondaryColor="hsl(330, 81%, 60%)" // Pink
         primaryName="Gross Margin"
         secondaryName="Net Margin"
@@ -272,7 +283,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
       <StockChart
         title="Free Cash Flow"
         subtitle="USD"
-        data={financialData.freeCashFlow[dataFrequency]}
+        data={getDataArray(financialData?.freeCashFlow)}
         dataFrequency={dataFrequency}
         color="hsl(152, 76%, 40%)" // Green
         index={5}
@@ -283,7 +294,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
       <StockChart
         title="Capex"  // Changed to match the isFinancialValue check in formatTooltipValue
         subtitle="USD"
-        data={financialData.capex[dataFrequency]}
+        data={getDataArray(financialData?.capex)}
         dataFrequency={dataFrequency}
         color="hsl(345, 82%, 45%)" // Dark red
         index={6}
@@ -293,7 +304,7 @@ const ChartsGrid: FC<ChartsGridProps> = ({
       />
 
       {/* Dividends chart with fixed quarterly frequency */}
-      {financialData.dividends && (
+      {financialData?.dividends && (
         <StockChart
           title="Dividends"
           subtitle="Per Share"
