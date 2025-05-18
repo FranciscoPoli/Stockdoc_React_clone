@@ -3,8 +3,9 @@ set -e
 
 echo "Building client..."
 
-# Clean up any existing builds
+# Start in the root directory and ensure it's clean
 rm -rf dist client/dist
+mkdir -p dist
 
 cd client
 
@@ -26,25 +27,27 @@ echo "Starting build..."
 VITE_SKIP_TS_CHECK=true NODE_ENV=production npm run build
 echo "Build completed"
 
-# Debug: List contents of current directory and dist
-echo "Contents of client directory:"
-ls -la
-echo "Contents of dist directory:"
-ls -la dist
+# Debug: List contents
+echo "Contents of client/dist directory:"
+ls -la dist/
 
 cd ..
 
-# Move the built files to the correct location
-echo "Moving build files to root dist directory..."
-mv -f client/dist/* dist/ || {
-    echo "Failed to move from client/dist. Checking root dist..."
-    if [ -d "dist" ] && [ -f "dist/index.html" ]; then
-        echo "Build files already in correct location"
-    else
-        echo "Build failed to create expected output"
-        exit 1
-    fi
-}
+# Copy the built files to the root dist directory
+echo "Copying build files to root dist directory..."
+cp -r client/dist/* dist/
+
+# Verify the copy
+echo "Contents of root dist directory:"
+ls -la dist/
+
+# Verify index.html exists
+if [ ! -f "dist/index.html" ]; then
+    echo "Error: index.html not found in dist directory"
+    exit 1
+fi
+
+echo "Build and copy completed successfully"
 cd ..
 
 # Copy build output to dist directory
