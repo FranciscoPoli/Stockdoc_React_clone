@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd client && npm install && npm install use-sync-external-store@1.2.0 --save && VITE_SKIP_WARNINGS=true NODE_ENV=production vite build --mode production && cd .. && mkdir -p dist && cp -r client/dist/* dist/",
+  "buildCommand": "cd client && npm install && npm install wouter@3.0.0 use-sync-external-store@1.2.0 --save && NODE_ENV=production vite build --config vite.config.ts && cd .. && mkdir -p dist && cp -r client/dist/* dist/",
   "outputDirectory": "dist",
   "rewrites": [
     {
