@@ -20,36 +20,22 @@ npm install react@18.2.0 react-dom@18.2.0 --save-exact
 # Install wouter from npm with ESM support
 npm install wouter@2.11.0 --save-exact
 
-# Update vite config for better ESM compatibility
-echo 'import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
-
-export default defineConfig({
-  plugins: [react()],
-  build: {
-    outDir: "../dist",
-    emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ["react", "react-dom", "wouter"]
-        }
-      }
-    }
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src")
-    }
-  },
-  optimizeDeps: {
-    include: ["wouter"]
-  }
-});' > vite.config.ts
-
 # Build with production settings
 VITE_SKIP_TS_CHECK=true NODE_ENV=production npm run build
+
+cd ..
+
+# Create dist directory and copy build output
+mkdir -p dist
+cp -r client/dist/* dist/ || {
+    echo "Checking build output location..."
+    ls -la client/dist
+    echo "Trying alternative build output location..."
+    cp -r dist/* dist/ || {
+        echo "Build failed to create expected output"
+        exit 1
+    }
+}
 cd ..
 
 # Copy build output to dist directory

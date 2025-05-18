@@ -5,10 +5,14 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: "../dist",
+    outDir: "dist",
     emptyOutDir: true,
-    commonjsOptions: {
-      include: []
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "wouter"]
+        }
+      }
     }
   },
   resolve: {
@@ -16,13 +20,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src")
     }
   },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true
-      }
-    }
+  optimizeDeps: {
+    include: ["wouter"]
   },
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' }
